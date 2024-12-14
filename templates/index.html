@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Coffee Castle</title>
+
+<!--bootstrap css cdn start   -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<!--bootstrap css cdn end   -->
+<!--local css start  -->
+<link rel="stylesheet" href="../static/assets/css/index.css">
+<!--    local css end-->
+<!--fonts start-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Niconne&display=swap" rel="stylesheet">
+<!--fonts end    -->
+</head>
+
+<body>
+
+<!--navbar start-->
+<nav class="navbar sticky-top navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid nav_con">
+    <a class="navbar-brand " href="#">
+        <img class="nav_logo" src="../static/assets/images/castle-coffee-color2.jpg">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link active " aria-current="page" href="#home">Home</a>
+        <a class="nav-link active" href="#filter">Filters</a>
+        <a class="nav-link active" href="#places">Cafes</a>
+
+      </div>
+    </div>
+  </div>
+</nav>
+<!--navbar end-->
+<!--home sec start-->
+<section id="home">
+    <div class="home_wrapper">
+        <div class="section_title_home">
+            <h1 >Welcome To Coffee Castle</h1>
+        </div>
+          <div class="loc_text">
+            <h2>📍 Locations in London</h2>
+        </div>
+    <div class="intro">
+        <p>
+            The best work and study-friendly cafes,
+            restaurants, libraries, and hotel lobbies
+            in London. Expand your coworking map with
+            our list of casual spots with free and
+            reliable Wi-Fi, ample power sockets, and
+            comfy seating areas.
+        </p>
+    </div>
+    <div class="map">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1279165.7867238033!2d-2.1697872561576497!3d51.230667852431644!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47d8a00baf21de75%3A0x52963a5addd52a99!2sLondon%2C%20UK!5e0!3m2!1sen!2sin!4v1734044387763!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+    </div>
+</section>
+<!--home sec end-->
+<!--filter sec start-->
+<section id="filter">
+    <div class="filter_wrapper">
+        <div class="section_title_filter">
+            <h1>Filters</h1>
+        </div>
+        <form class="filter_btn" action= "/" method="POST">
+            {% for filter in filters %}
+         <button type="submit"
+                 data-bs-toggle="submit"
+                 name="{{filter}}"
+                 {% if filter in user_filter %}
+                 class="btn active"
+                 {%else%}
+                 class="btn"
+                 {%endif%}
+                 id="{{filter}}"
+                 value="{{filter}}"
+                 style="grid-column-start: {{filters.index(filter)}} ;grid-row-start:1">{{filter}}</button>
+            {% endfor %}
+        </form>
+        </div>
+</section>
+<!--filter sec end-->
+<!--places sec start-->
+<section id="places">
+    <div class="section_title_places">
+        <h1>{{found_places}} work friendly places in london</h1>
+
+    </div>
+      <div id="carouselExampleDark" class="carousel  carousel-dark slide " data-ride="carousel">
+    <div class="carousel-inner">
+
+       <div class="carousel-item active">
+        <!-- project-->
+           <div class=" cards-wrapper">
+                    {% for project in result[:3] %}
+                    <div class="card  border-0" style="width: 18rem;">
+                        <img class="card-img-top" src="{{project.img_url}}" alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title">{{project.name}}</h5>
+                                <p class="card-text">{{project.location}}</p>
+                                <a href="{{project.map_url}}" class="btn btn-primary">Map Link</a>
+                            </div>
+                    </div>
+
+                    {% endfor %}
+           </div>
+       </div>
+          {% set s_index=namespace(value=3) %}
+        {% set e_index=namespace(value=6) %}
+         {% for n in range(result|length) %}
+        {% if s_index.value < result|length %}
+        <div class="carousel-item ">
+           <div class=" cards-wrapper">
+               {% for project in result[s_index.value:e_index.value] %}
+                    <div class="card border-0" style="width: 18rem;">
+                        <img class="card-img-top" src="{{project.img_url}}" alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title">{{project.name}}</h5>
+                                <p class="card-text">{{project.location}}</p>
+                                <a href="{{project.map_url}}" class="btn btn-primary ">Map Link</a>
+                            </div>
+                    </div>
+               {% endfor %}
+               {% set s_index.value = s_index.value + 3 %}
+               {% set e_index.value = e_index.value + 3 %}
+
+           </div>
+       </div>
+            {% endif %}
+            {% endfor %}
+    </div>
+           <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+   </div>
+</section>
+<!--places sec end-->
+ <p class="copyright-text">Copyright &copy; Dev_Siddhansh {{year}} <a href="https://x.com/DevSiddhansh"> <i class="fa-brands fa-x-twitter fa-2xl socials"></i></a>  <a  href="https://github.com/SiddhanshManikoth"><i class="fa-brands fa-github fa-2xl socials"></i></a> </p>
+
+<!--bootstrap js cdn start-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<!--bootstrap js cdn end-->
+</body>
+
+</html>
